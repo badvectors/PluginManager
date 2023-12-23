@@ -1,0 +1,12 @@
+[
+  {
+    "Name": "badvectors/ATISPlugin",
+    "DllName": "ATISPlugin.dll",
+    "Description": "Plugin to add multiple ATIS support for vatSys."
+  },
+  {
+    "Name": "badvectors/SimulatorPlugin",
+    "DllName": "SimulatorPlugin.dll",
+    "Description": "Plugin that selects the aircraft in the simulator for vatSys."
+  }
+]
