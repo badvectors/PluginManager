@@ -15,7 +15,7 @@ namespace PluginManager.Updater
     internal class Program
     {
         private static readonly string VatsysProcessName = $@"vatSys";
-        private static readonly string PluginsUrl = "https://raw.githubusercontent.com/badvectors/UpdaterPlugin/master/Plugins.json";
+        private static readonly string PluginsUrl = "https://raw.githubusercontent.com/badvectors/PluginManager/master/Plugins.json";
 
         private static readonly HttpClient HttpClient = new HttpClient();
 
