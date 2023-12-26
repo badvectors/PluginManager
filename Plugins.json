@@ -6,7 +6,7 @@
   },
   {
     "Name": "badvectors/DiscordPlugin",
-    "DllName": "DiscordPlugin.dll",
+    "DllName": "DiscordPlugin.Plugin.dll",
     "Description": "A Discord presence plugin for vatSys."
   },
   {
