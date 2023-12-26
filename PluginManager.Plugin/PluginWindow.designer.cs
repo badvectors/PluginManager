@@ -1,6 +1,6 @@
 ﻿namespace PluginManager.Plugin
 {
-    partial class UpdaterWindow
+    partial class PluginWindow
     {
         /// <summary>
         /// Required designer variable.

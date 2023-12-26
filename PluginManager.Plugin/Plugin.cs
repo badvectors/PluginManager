@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows.Forms;
 using PluginManager.Common;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace PluginManager.Plugin
 {
@@ -31,7 +32,7 @@ namespace PluginManager.Plugin
         public static List<PluginInfo> Plugins { get; set; } = new List<PluginInfo>();
 
         private static CustomToolStripMenuItem UpdaterMenu;
-        private static UpdaterWindow UpdaterWindow;
+        private static PluginWindow UpdaterWindow;
 
         public Plugin()
         {
@@ -55,7 +56,7 @@ namespace PluginManager.Plugin
             {
                 if (UpdaterWindow == null || UpdaterWindow.IsDisposed)
                 {
-                    UpdaterWindow = new UpdaterWindow();
+                    UpdaterWindow = new PluginWindow();
                 }
                 else if (UpdaterWindow.Visible) return;
 
@@ -97,15 +98,24 @@ namespace PluginManager.Plugin
             }
         }
 
+        public static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
+
         public static void StartUpdaterApp(string command)
         {
             if (Process.GetProcessesByName(AppName).Any()) return;
 
             if (string.IsNullOrWhiteSpace(command)) return;
 
-            Environment.CurrentDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-
-            var file = Path.Combine(Environment.CurrentDirectory, "Plugins", "Updater", AppFile);
+            var file = Path.Combine(AssemblyDirectory, AppFile);
 
             if (!new FileInfo(file).Exists) return;
 

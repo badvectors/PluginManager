@@ -4,9 +4,9 @@ using vatsys;
 
 namespace PluginManager.Plugin
 {
-    public partial class UpdaterWindow : BaseForm
+    public partial class PluginWindow : BaseForm
     {
-        public UpdaterWindow()
+        public PluginWindow()
         {
             InitializeComponent();
 

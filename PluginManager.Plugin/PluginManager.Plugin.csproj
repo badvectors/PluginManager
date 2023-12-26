@@ -77,11 +77,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UpdaterWindow.cs">
+    <Compile Include="PluginWindow.cs">
       <SubType>designer</SubType>
     </Compile>
-    <Compile Include="UpdaterWindow.designer.cs">
-      <DependentUpon>UpdaterWindow.cs</DependentUpon>
+    <Compile Include="PluginWindow.designer.cs">
+      <DependentUpon>PluginWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -97,8 +97,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UpdaterWindow.resx">
-      <DependentUpon>UpdaterWindow.cs</DependentUpon>
+    <EmbeddedResource Include="PluginWindow.resx">
+      <DependentUpon>PluginWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
