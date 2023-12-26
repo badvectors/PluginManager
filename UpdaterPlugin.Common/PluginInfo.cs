@@ -1,4 +1,4 @@
-﻿namespace UpdaterPlugin.Common
+﻿namespace PluginManager.Common
 {
     public class PluginInfo
     {

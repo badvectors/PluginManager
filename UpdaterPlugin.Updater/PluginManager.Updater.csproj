@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E51817FF-6BA8-45AB-A1CE-93722D114349}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>UpdaterPlugin.Updater</RootNamespace>
-    <AssemblyName>UpdaterPlugin.Updater</AssemblyName>
+    <RootNamespace>PluginManager.Updater</RootNamespace>
+    <AssemblyName>PluginManager.Updater</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -150,9 +150,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UpdaterPlugin.Common\UpdaterPlugin.Common.csproj">
+    <ProjectReference Include="..\UpdaterPlugin.Common\PluginManager.Common.csproj">
       <Project>{691f6209-91ea-49bf-b44c-cea52bf81cc8}</Project>
-      <Name>UpdaterPlugin.Common</Name>
+      <Name>PluginManager.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace UpdaterPlugin.Plugin
+﻿namespace PluginManager.Plugin
 {
     partial class UpdaterWindow
     {

@@ -9,10 +9,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using UpdaterPlugin.Common;
+using PluginManager.Common;
 using System.Collections.Generic;
 
-namespace UpdaterPlugin.Plugin
+namespace PluginManager.Plugin
 {
     [Export(typeof(IPlugin))]
     public class Plugin : IPlugin
@@ -24,8 +24,8 @@ namespace UpdaterPlugin.Plugin
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/UpdaterPlugin/master/Version.json";
         private static readonly string PluginsUrl = "https://raw.githubusercontent.com/badvectors/UpdaterPlugin/master/Plugins.json";
 
-        private static readonly string UpdaterAppName = "UpdaterPlugin.Updater";
-        private static readonly string UpdaterAppFile = $"{UpdaterAppName}.exe";
+        private static readonly string AppName = "PluginManager.Updater";
+        private static readonly string AppFile = $"{AppName}.exe";
 
         private static readonly HttpClient HttpClient = new HttpClient();
         public static List<PluginInfo> Plugins { get; set; } = new List<PluginInfo>();
@@ -99,13 +99,13 @@ namespace UpdaterPlugin.Plugin
 
         public static void StartUpdaterApp(string command)
         {
-            if (Process.GetProcessesByName(UpdaterAppName).Any()) return;
+            if (Process.GetProcessesByName(AppName).Any()) return;
 
             if (string.IsNullOrWhiteSpace(command)) return;
 
             Environment.CurrentDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
-            var file = Path.Combine(Environment.CurrentDirectory, "Plugins", "Updater", UpdaterAppFile);
+            var file = Path.Combine(Environment.CurrentDirectory, "Plugins", "Updater", AppFile);
 
             if (!new FileInfo(file).Exists) return;
 

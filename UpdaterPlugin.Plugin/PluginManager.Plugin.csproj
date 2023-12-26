@@ -7,8 +7,8 @@
     <ProjectGuid>{0DDF31C8-723A-49C3-9583-59890DE4C596}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UpdaterPlugin.Plugin</RootNamespace>
-    <AssemblyName>UpdaterPlugin.Plugin</AssemblyName>
+    <RootNamespace>PluginManager.Plugin</RootNamespace>
+    <AssemblyName>PluginManager.Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -91,9 +91,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UpdaterPlugin.Common\UpdaterPlugin.Common.csproj">
+    <ProjectReference Include="..\UpdaterPlugin.Common\PluginManager.Common.csproj">
       <Project>{691F6209-91EA-49BF-B44C-CEA52BF81CC8}</Project>
-      <Name>UpdaterPlugin.Common</Name>
+      <Name>PluginManager.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

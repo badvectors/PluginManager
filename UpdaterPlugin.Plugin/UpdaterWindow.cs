@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using vatsys;
 
-namespace UpdaterPlugin.Plugin
+namespace PluginManager.Plugin
 {
     public partial class UpdaterWindow : BaseForm
     {
