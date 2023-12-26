@@ -1,6 +1,6 @@
 # PluginManager
 
-A plugin manager for [vatSys](https://virtualairtrafficsystem.com/).
+A plugin manager for [vatSys](https://virtualairtrafficsystem.com/) that installs and updates plugins.
 
 #### Installation
 
