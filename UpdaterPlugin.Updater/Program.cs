@@ -7,113 +7,196 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
+using UpdaterPlugin.Common;
 
 namespace UpdaterPlugin.Updater
 {
     internal class Program
     {
         private static readonly string VatsysProcessName = $@"vatSys";
-        private static readonly string VatsysDirectory = $@"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\vatSys Files\";
-        
+        private static readonly string PluginsUrl = "https://raw.githubusercontent.com/badvectors/UpdaterPlugin/master/Plugins.json";
+
         private static readonly HttpClient HttpClient = new HttpClient();
 
         public static List<PluginInfo> Plugins { get; set; } = new List<PluginInfo>();
         public static List<KeyValuePair<string, PluginInfo>> FoundPlugins { get; set; } = new List<KeyValuePair<string, PluginInfo>>();
         public static Serilog.Core.Logger Logger { get; set; }
-        public static bool Running { get; set; }
+        public static string BaseDirectory => Directories.First();
 
-        static void Main()
+        private static List<string> Directories { get; set; } = new List<string>();
+
+        static void Main(string[] args)
         {
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (args.Length == 0)
+            {
+                args = new string[] { "Update", @"C:\Program Files (x86)\vatSys", @"C:\Users\ajdun\OneDrive\Documents\vatSys Files\" };
+            }
+
             Logger = new LoggerConfiguration()
-                        .WriteTo.Console()
-                        .WriteTo.File("logs.txt", rollingInterval: RollingInterval.Day)
+                        //.WriteTo.Console()
+                        .WriteTo.File($"{args[1]}pluginmanager_log.txt", rollingInterval: RollingInterval.Day)
                         .MinimumLevel.Debug()
                         .CreateLogger();
 
-            DoArt();
-
-            Plugins.Add(new PluginInfo("badvectors/ATISPlugin", "ATISPlugin.dll"));
-
-            try
+            foreach (var arg in args)
             {
-                // Check and exit if a version already running.
-                if (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length > 1)
-                {
-                    Environment.Exit(0);
-                }
-
-                // Check to see that vatSys is running.
-                CheckVatsys();
-
-                Running = true;
-
-                Logger.Information($"Updater app started.");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"Could not start updater: {ex.Message}");
+                Logger.Information($"Start argument: {arg}");
+                Console.WriteLine($"Start argument: {arg}");
+                if (!Directory.Exists(arg)) continue;
+                Directories.Add(arg);
             }
 
-            while (Running) Thread.Sleep(TimeSpan.FromSeconds(3));
-        }
-
-        private static void CheckVatsys()
-        {
-            // Get the vatSys process.
-            var vatsysProcess = Process.GetProcessesByName(VatsysProcessName);
-
-            // If vatSys not running close.
-            if (vatsysProcess.Length == 0)
+            // Check and exit if a version already running.
+            if (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length > 1)
             {
-                Logger.Information("vatSys was not open. Closing app.");
                 Environment.Exit(0);
             }
 
-            Logger.Information("Waiting for vatSys to close.");
+            Logger.Information($"Base directory: {BaseDirectory}");
 
-            // Monitor for vatSys to exit to update the plugins.
-            ProcessMonitor.MonitorForExit(vatsysProcess[0]);
+            Console.WriteLine($"Base directory: {BaseDirectory}");
+
+            Logger.Information($"Updater app started.");
+
+            DoArt();
+
+            // Get plugins.
+            GetPlugins().GetAwaiter().GetResult();
+
+            // Find existing plugins.
+            FindExisting().GetAwaiter().GetResult();
+
+            // Request go from use.
+            Console.WriteLine();
+            Console.Write("Press any key to continue. ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("WARNING: vatSys will be restarted.");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.ReadKey();
+            Console.WriteLine();
+
+            // Get any running vatSys processes.
+            var vatsysProcesses = Process.GetProcessesByName(VatsysProcessName);
+
+            // Kill all running vatSys processes.
+            if (vatsysProcesses.Length > 0)
+            {
+                foreach (var vatsysProcess in vatsysProcesses)
+                    vatsysProcess.Kill();
+            }
+
+            // Interpret the start args.
+            if (args.Length == 3)
+            {
+                if (args[0] == "Update") RunUpdates().GetAwaiter().GetResult();
+                else RunInstalls(args[0]).GetAwaiter().GetResult();
+            }
+
+            var vatsys = Path.Combine(BaseDirectory, "bin", "vatSys.exe");
+
+            Console.WriteLine("Completed!");
+
+            if (File.Exists(vatsys))
+            {
+                Console.WriteLine("Restarting vatSys now.");
+
+                Process.Start(vatsys);
+            }
+
+            Environment.Exit(0);
         }
 
-        public static class ProcessMonitor
+        private static async Task GetPlugins()
         {
-            public static event EventHandler ProcessClosed;
+            Console.Write("Getting available plugins:");
 
-            public static void MonitorForExit(Process process)
+            Logger.Information($"Getting list of plugins.");
+
+            var response = await HttpClient.GetAsync(PluginsUrl);
+
+            if (!response.IsSuccessStatusCode)
             {
-                Thread thread = new Thread(() =>
-                {
-                    process.WaitForExit();
-                    OnProcessClosed(EventArgs.Empty);
-                });
-                thread.Start();
+                Logger.Error("Could not get list of plugins.");
+                Environment.Exit(0);
+                return;
             }
+
+            var stringContent = await response.Content.ReadAsStringAsync();
+
+            var plugins = JsonConvert.DeserializeObject<PluginInfo[]>(stringContent);
+
+            foreach (var plugin in plugins)
+            {
+                Logger.Information($"Adding plugin {plugin.Name}.");
+                Plugins.Add(new PluginInfo(plugin.Name, plugin.DllName, plugin.Description));
+            }
+
+            Console.WriteLine($" found {plugins.Count()}.");
         }
 
-        private static async void OnProcessClosed(EventArgs e)
+        private static async Task FindExisting()
         {
-            Logger.Information("vatSys closed, checking for plugin updates.");
-            
-            if (Directory.Exists(VatsysDirectory))
+            await Console.Out.WriteAsync("Searching for existing plugins:");
+
+            foreach (var directory in Directories)
             {
-                await ProcessDirectory(VatsysDirectory);
+                await ProcessDirectory(directory);
             }
 
+            await Console.Out.WriteLineAsync($" found {FoundPlugins.Count()}.");
+        }
+
+        private static async Task RunInstalls(string name)
+        {
+            var plugin = Plugins.FirstOrDefault(x => x.Name == name);
+
+            if (plugin == null)
+            {
+                Console.Write($"Could not find a plugin with name: {name}.");
+
+                Logger.Error($"Could not find a plugin with name: {name}.");
+
+                return;
+            }
+
+            if (FoundPlugins.Any(x => x.Key.EndsWith(plugin.DllName)))
+            {
+                Console.Write($"Plugin was already installed.");
+
+                Logger.Error($"Plugin was already installed.");
+
+                return;
+            }
+
+            var directory = $@"{BaseDirectory}\bin\Plugins\{plugin.Name.Split('/')[1]}";
+
+            if (Directory.Exists(directory))
+            {
+                Console.Write("Did not install because target directory already existed.");
+
+                Logger.Error("Did not install because target directory already existed.");
+
+                return;
+            }
+
+            Directory.CreateDirectory(directory);
+
+            await Install(plugin, directory);
+        }
+
+        private static async Task RunUpdates()
+        {
             foreach (var plugin in FoundPlugins)
             {
                 await ProcessPlugin(plugin.Key, plugin.Value); 
             }
 
-            // Now close this app.
-            Logger.Information("Completed.");
-
-            Running = false;
+            Logger.Information("Completed updating existing plugins.");
         }
 
-        // Process all files in the directory passed in, recurse on any directories 
-        // that are found, and process the files they contain.
         public static async Task ProcessDirectory(string targetDirectory)
         {
             // Process the list of files found in the directory.
@@ -127,7 +210,6 @@ namespace UpdaterPlugin.Updater
                 await ProcessDirectory(subdirectory);
         }
 
-        // Insert logic for processing found files here.
         public static void ProcessFile(string path)
         {
             var pluginInfo = Plugins.FirstOrDefault(x => path.EndsWith(x.DllName));
@@ -142,6 +224,8 @@ namespace UpdaterPlugin.Updater
         public static async Task ProcessPlugin(string path, PluginInfo pluginInfo)
         {
             Logger.Information($"Processing '{pluginInfo.Name}' @ {path}.");
+
+            Console.WriteLine($"Processing '{pluginInfo.Name}'.");
 
             var localDirectory = path.Substring(0, path.Length - pluginInfo.DllName.Length);
 
@@ -174,6 +258,7 @@ namespace UpdaterPlugin.Updater
 
             if (localVersion >= remoteVersion)
             {
+                await Console.Out.WriteLineAsync("Plugin up-to-date.");
                 Logger.Information("Plugin up-to-date.");
                 return;
             }
@@ -181,9 +266,31 @@ namespace UpdaterPlugin.Updater
             await Update(pluginInfo, localDirectory);
         }
 
+        public static async Task Install(PluginInfo pluginInfo, string localDirectory)
+        {
+            // download update
+            await Download(pluginInfo.DownladUrl, localDirectory);
+
+            // unzip
+            Extract(localDirectory);
+
+            // delete download
+            if (!File.Exists(Path.Combine(localDirectory, "Plugin.zip"))) return;
+
+            Console.WriteLine("Cleaning up.");
+
+            Logger.Information("Removing download.");
+
+            File.Delete(Path.Combine(localDirectory, "Plugin.zip"));
+
+            Logger.Information("Completed install.");
+        }
+
         public static async Task Update(PluginInfo pluginInfo, string localDirectory)
         {
             Logger.Information("Updating plugin.");
+
+            Console.WriteLine($"Updating plugin.");
 
             // delete contents
             if (!Directory.Exists(localDirectory)) return;
@@ -200,28 +307,18 @@ namespace UpdaterPlugin.Updater
             }
             catch (Exception ex)
             {
-                Logger.Error($"Could not remove existing version: {ex.Message}");
+                Logger.Error($"Could not remove existing version: {ex.Message}.");
                 return;
             }
 
-            // download update
-            await Download(pluginInfo.DownladUrl, localDirectory);
-
-            // unzip
-            Extract(localDirectory);
-
-            // delete download
-
-            if (!File.Exists(Path.Combine(localDirectory, "Plugin.zip"))) return;
-
-            Logger.Information("Removing download.");
-
-            File.Delete(Path.Combine(localDirectory, "Plugin.zip"));
+            await Install(pluginInfo, localDirectory); 
         }
 
         public static async Task Download(string downloadUrl, string localDirectory)
         {
-            Logger.Information($"Downloading plugin from: {downloadUrl}");
+            Logger.Information($"Downloading plugin from: {downloadUrl}.");
+
+            Console.WriteLine($"Downloading plugin from: {downloadUrl}.");
 
             using (var response = await HttpClient.GetAsync(downloadUrl))
             {
@@ -244,6 +341,8 @@ namespace UpdaterPlugin.Updater
         public static void Extract(string localDirectory)
         {
             Logger.Information("Extracting plugin.");
+
+            Console.WriteLine("Extracting plugin.");
 
             try
             {

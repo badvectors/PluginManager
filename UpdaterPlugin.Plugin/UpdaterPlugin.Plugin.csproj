@@ -7,8 +7,8 @@
     <ProjectGuid>{0DDF31C8-723A-49C3-9583-59890DE4C596}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DiscordPlugin.Plugin</RootNamespace>
-    <AssemblyName>DiscordPlugin.Plugin</AssemblyName>
+    <RootNamespace>UpdaterPlugin.Plugin</RootNamespace>
+    <AssemblyName>UpdaterPlugin.Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\Program Files %28x86%29\vatSys\bin\Plugins\Updater\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -77,6 +77,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UpdaterWindow.cs">
+      <SubType>designer</SubType>
+    </Compile>
+    <Compile Include="UpdaterWindow.designer.cs">
+      <DependentUpon>UpdaterWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -89,6 +95,11 @@
       <Project>{691F6209-91EA-49BF-B44C-CEA52BF81CC8}</Project>
       <Name>UpdaterPlugin.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UpdaterWindow.resx">
+      <DependentUpon>UpdaterWindow.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
