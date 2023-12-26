@@ -150,7 +150,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UpdaterPlugin.Common\PluginManager.Common.csproj">
+    <ProjectReference Include="..\PluginManager.Common\PluginManager.Common.csproj">
       <Project>{691f6209-91ea-49bf-b44c-cea52bf81cc8}</Project>
       <Name>PluginManager.Common</Name>
     </ProjectReference>

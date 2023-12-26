@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginManager.Plugin", "UpdaterPlugin.Plugin\PluginManager.Plugin.csproj", "{0DDF31C8-723A-49C3-9583-59890DE4C596}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginManager.Plugin", "PluginManager.Plugin\PluginManager.Plugin.csproj", "{0DDF31C8-723A-49C3-9583-59890DE4C596}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginManager.Common", "UpdaterPlugin.Common\PluginManager.Common.csproj", "{691F6209-91EA-49BF-B44C-CEA52BF81CC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginManager.Common", "PluginManager.Common\PluginManager.Common.csproj", "{691F6209-91EA-49BF-B44C-CEA52BF81CC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginManager.Updater", "UpdaterPlugin.Updater\PluginManager.Updater.csproj", "{E51817FF-6BA8-45AB-A1CE-93722D114349}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginManager.Updater", "PluginManager.Updater\PluginManager.Updater.csproj", "{E51817FF-6BA8-45AB-A1CE-93722D114349}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
