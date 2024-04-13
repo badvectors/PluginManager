@@ -13,5 +13,10 @@
     "Name": "badvectors/SimulatorPlugin",
     "DllName": "SimulatorPlugin.dll",
     "Description": "Plugin that selects the aircraft in the simulator for vatSys."
+  },
+  {
+    "Name": "badvectors/EventsPlugin",
+    "DllName": "EventsPlugin.dll",
+    "Description": "Plugin that highlights event traffic for vatSys."
   }
 ]
