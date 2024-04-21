@@ -18,5 +18,10 @@
     "Name": "badvectors/EventsPlugin",
     "DllName": "EventsPlugin.dll",
     "Description": "Plugin that highlights event traffic for vatSys."
+  },
+  {
+    "Name": "maxrumsey/OzStrips",
+    "DllName": "ozstrips.dll",
+    "Description": "INTAS addon for vatSys."
   }
 ]
