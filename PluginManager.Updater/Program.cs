@@ -9,6 +9,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using PluginManager.Common;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Threading;
 
 namespace PluginManager.Updater
 {
@@ -26,7 +31,43 @@ namespace PluginManager.Updater
 
         private static List<string> Directories { get; set; } = new List<string>();
 
+        private static bool Errors { get; set; }
+
         static void Main(string[] args)
+        {
+            if (!IsRunAsAdmin())
+            {
+                ProcessStartInfo proc = new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    WorkingDirectory = Environment.CurrentDirectory,
+                    FileName = Assembly.GetEntryAssembly().CodeBase
+                };
+
+                foreach (string arg in args)
+                {
+                    proc.Arguments += String.Format("\"{0}\" ", arg);
+                }
+
+                proc.Verb = "runas";
+
+                try
+                {
+                    Process.Start(proc);
+                }
+                catch
+                {
+                    Console.WriteLine("This application requires elevated credentials in order to operate correctly!");
+                    Console.ReadKey();
+                }
+            }
+            else
+            {
+                Run(args);
+            }          
+        }
+
+        private static void Run(string[] args)
         {
             Console.ForegroundColor = ConsoleColor.White;
 
@@ -86,6 +127,12 @@ namespace PluginManager.Updater
             {
                 foreach (var vatsysProcess in vatsysProcesses)
                     vatsysProcess.Kill();
+
+                Console.WriteLine("Closing vatSys. Please wait....");
+
+                Console.WriteLine();
+
+                Thread.Sleep(TimeSpan.FromSeconds(6));
             }
 
             // Interpret the start args.
@@ -97,7 +144,20 @@ namespace PluginManager.Updater
 
             var vatsys = Path.Combine(BaseDirectory, "bin", "vatSys.exe");
 
-            Console.WriteLine("Completed!");
+            if (Errors)
+            {
+                Console.WriteLine();
+
+                Console.WriteLine("Completed with errors! Press any key to continue.");
+
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine();
+
+                Console.WriteLine("Completed!");
+            }
 
             if (File.Exists(vatsys))
             {
@@ -107,6 +167,14 @@ namespace PluginManager.Updater
             }
 
             Environment.Exit(0);
+        }
+
+        private static bool IsRunAsAdmin()
+        {
+            WindowsIdentity id = WindowsIdentity.GetCurrent();
+            WindowsPrincipal principal = new WindowsPrincipal(id);
+
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
         private static async Task GetPlugins()
@@ -159,6 +227,8 @@ namespace PluginManager.Updater
 
                 Logger.Error($"Could not find a plugin with name: {name}.");
 
+                Errors = true;
+
                 return;
             }
 
@@ -179,10 +249,14 @@ namespace PluginManager.Updater
 
                 Logger.Error("Did not install because target directory already existed.");
 
+                Errors = true;
+
                 return;
             }
 
             Directory.CreateDirectory(directory);
+
+            File.SetAttributes(directory, File.GetAttributes(directory) & ~FileAttributes.ReadOnly);
 
             await Install(plugin, directory);
         }
@@ -247,6 +321,9 @@ namespace PluginManager.Updater
             if (!response.IsSuccessStatusCode)
             {
                 Logger.Error("Remote version file was not found.");
+
+                Errors = true;
+
                 return;
             }
 
@@ -259,7 +336,9 @@ namespace PluginManager.Updater
             if (localVersion >= remoteVersion)
             {
                 await Console.Out.WriteLineAsync("Plugin up-to-date.");
+
                 Logger.Information("Plugin up-to-date.");
+
                 return;
             }
 
@@ -302,12 +381,23 @@ namespace PluginManager.Updater
                 string[] fileEntries = Directory.GetFiles(localDirectory);
                 foreach (string fileName in fileEntries)
                 {
+                    File.SetAttributes(fileName, FileAttributes.Normal);
                     File.Delete(fileName);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Error($"Could not remove existing version: {ex.Message}.");
+                Logger.Error($"Could not remove existing version: {ex.Message}");
+
+                Console.WriteLine($"Could not remove existing version: {ex.Message}");
+                
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"-> {ex.InnerException.Message}");
+                }
+
+                Errors = true;
+
                 return;
             }
 
@@ -325,6 +415,9 @@ namespace PluginManager.Updater
                 if (!response.IsSuccessStatusCode)
                 {
                     Logger.Error($"Could not download plugin: {response.StatusCode}");
+
+                    Console.WriteLine($"Could not download plugin: {response.StatusCode}");
+
                     return;
                 }
 
@@ -351,7 +444,24 @@ namespace PluginManager.Updater
             catch (Exception ex)
             {
                 Logger.Error($"Could not extract plugin: {ex.Message}");
+
+                Console.WriteLine($"Could not extract plugin: {ex.Message}");
+
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"-> {ex.InnerException.Message}");
+                }
+
+                Errors = true;
+
                 return;
+            }
+
+            string[] fileEntries = Directory.GetFiles(localDirectory);
+
+            foreach (var file in fileEntries)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
             }
 
             Logger.Information("Extract completed.");
