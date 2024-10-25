@@ -131,8 +131,11 @@ namespace PluginManager.Updater
                 Console.WriteLine("Closing vatSys. Please wait....");
 
                 Console.WriteLine();
+            }
 
-                Thread.Sleep(TimeSpan.FromSeconds(6));
+            while (Process.GetProcessesByName(VatsysProcessName).Count() > 0)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(1));
             }
 
             // Interpret the start args.
