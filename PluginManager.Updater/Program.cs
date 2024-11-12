@@ -9,10 +9,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using PluginManager.Common;
-using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Threading;
 
 namespace PluginManager.Updater
@@ -73,12 +71,16 @@ namespace PluginManager.Updater
 
             if (args.Length == 0)
             {
-                args = new string[] { "Update", @"C:\Program Files (x86)\vatSys", @"C:\Users\ajdun\OneDrive\Documents\vatSys Files\" };
+                Console.WriteLine("ERROR: Could not run updater as no start arguments were given!");
+
+                Console.ReadKey();
+
+                Environment.Exit(0);
             }
 
             Logger = new LoggerConfiguration()
                         //.WriteTo.Console()
-                        .WriteTo.File($"{args[1]}pluginmanager_log.txt", rollingInterval: RollingInterval.Day)
+                        .WriteTo.File($"{args[2]}pluginmanager_log.txt", rollingInterval: RollingInterval.Day)
                         .MinimumLevel.Debug()
                         .CreateLogger();
 

@@ -21,7 +21,7 @@ namespace PluginManager.Plugin
         public string Name => "Plugin Manager";
         public static string DisplayName => "Plugin Manager";
 
-        private static readonly Version Version = new Version(1, 0);
+        private static readonly Version Version = new Version(1, 1);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/PluginManager/master/Version.json";
         private static readonly string PluginsUrl = "https://raw.githubusercontent.com/badvectors/PluginManager/master/Plugins.json";
 
