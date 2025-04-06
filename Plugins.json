@@ -19,6 +19,11 @@
     "DllName": "EventsPlugin.dll",
     "Description": "Plugin that highlights event traffic for vatSys."
   },
+    {
+    "Name": "badvectors/TestingPlugin",
+    "DllName": "VatpacPlugin.dll",
+    "Description": "Testings only."
+  },
   {
     "Name": "maxrumsey/OzStrips",
     "DllName": "ozstrips.dll",
