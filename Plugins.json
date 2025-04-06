@@ -20,7 +20,7 @@
     "Description": "Plugin that highlights event traffic for vatSys."
   },
     {
-    "Name": "badvectors/TestingPlugin",
+    "Name": "badvectors/VatpacPlugin",
     "DllName": "VatpacPlugin.dll",
     "Description": "Testings only."
   },
