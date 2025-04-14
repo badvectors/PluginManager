@@ -23,5 +23,10 @@
     "Name": "maxrumsey/OzStrips",
     "DllName": "ozstrips.dll",
     "Description": "INTAS addon for vatSys."
+  },
+    {
+    "Name": "badvectors/VatpacPlugin",
+    "DllName": "VatpacPlugin.dll",
+    "Description": "Testing only."
   }
 ]
