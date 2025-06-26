@@ -28,5 +28,10 @@
     "Name": "badvectors/VatpacPlugin",
     "DllName": "VatpacPlugin.dll",
     "Description": "Testing only."
+  },
+    {
+    "Name": "vatACARS/vatsys-plugin",
+    "DllName": "vatACARS.dll",
+    "Description": "Plugin to allow in client ACARS communication for the Hoppie network."
   }
 ]
