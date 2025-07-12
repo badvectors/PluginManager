@@ -33,5 +33,10 @@
     "Name": "vatACARS/vatsys-plugin",
     "DllName": "vatACARS.dll",
     "Description": "Plugin to allow in client ACARS communication for the Hoppie network."
+  },
+    {
+    "Name": "yukitsune/vatsys-fullscreen-plugin",
+    "DllName": "FullscreenPlugin.dll",
+    "Description": "Plugin that allows the main vatSys window to be made fullscreen."
   }
 ]
