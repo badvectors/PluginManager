@@ -15,11 +15,6 @@
     "Description": "Plugin that selects the aircraft in the simulator for vatSys."
   },
   {
-    "Name": "badvectors/EventsPlugin",
-    "DllName": "EventsPlugin.dll",
-    "Description": "Plugin that highlights event traffic for vatSys."
-  },
-  {
     "Name": "maxrumsey/OzStrips",
     "DllName": "ozstrips.dll",
     "Description": "INTAS addon for vatSys."
@@ -33,10 +28,5 @@
     "Name": "vatACARS/vatsys-plugin",
     "DllName": "vatACARS.dll",
     "Description": "Plugin to allow in client ACARS communication for the Hoppie network."
-  },
-    {
-    "Name": "yukitsune/vatsys-fullscreen-plugin",
-    "DllName": "FullscreenPlugin.dll",
-    "Description": "Plugin that allows the main vatSys window to be made fullscreen."
   }
 ]
