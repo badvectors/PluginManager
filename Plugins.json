@@ -14,19 +14,9 @@
     "DllName": "SimulatorPlugin.dll",
     "Description": "Plugin that selects the aircraft in the simulator for vatSys."
   },
-  {
-    "Name": "maxrumsey/OzStrips",
-    "DllName": "ozstrips.dll",
-    "Description": "INTAS addon for vatSys."
-  },
     {
     "Name": "badvectors/VatpacPlugin",
     "DllName": "VatpacPlugin.dll",
     "Description": "Testing only."
-  },
-    {
-    "Name": "vatACARS/vatsys-plugin",
-    "DllName": "vatACARS.dll",
-    "Description": "Plugin to allow in client ACARS communication for the Hoppie network."
   }
 ]
