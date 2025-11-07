@@ -18,5 +18,10 @@
     "Name": "badvectors/VatpacPlugin",
     "DllName": "VatpacPlugin.dll",
     "Description": "Testing only."
+  },
+  {
+    "Name": "maxrumsey/TrafficInjector",
+    "DllName": "TrafficInjector.Plugin.dll",
+    "Description": "Inserts real aircraft into vatSys."
   }
 ]
