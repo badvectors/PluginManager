@@ -23,5 +23,10 @@
     "Name": "maxrumsey/TrafficInjector",
     "DllName": "TrafficInjector.Plugin.dll",
     "Description": "Inserts real aircraft into vatSys."
+  },
+  {
+    "Name": "RealLeviticus/vatSysWindowManager",
+    "DllName": "vatSysWindowManager.dll",
+    "Description": "Saves and restores window layouts, ASD (display) state, and common window-specific settings."
   }
 ]
