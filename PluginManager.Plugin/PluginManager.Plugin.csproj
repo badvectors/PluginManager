@@ -91,12 +91,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PluginManager.Common\PluginManager.Common.csproj">
-      <Project>{691F6209-91EA-49BF-B44C-CEA52BF81CC8}</Project>
-      <Name>PluginManager.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="PluginWindow.resx">
       <DependentUpon>PluginWindow.cs</DependentUpon>
     </EmbeddedResource>
